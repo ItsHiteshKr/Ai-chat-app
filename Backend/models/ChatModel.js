@@ -1,7 +1,3 @@
-import React from 'react'
+//  chat ka table banayenge
+const mongoose = require('mongoose');
 
-export default function ChatModel() {
-    return (
-        <div>ChatModel</div>
-    )
-}
