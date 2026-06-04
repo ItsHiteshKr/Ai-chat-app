@@ -1,0 +1,12 @@
+# npm create vite@latest Chat_Frontend -- --template react
+
+
+# Jab bhi zaroorat pade, Tailwind uninstall karne ke liye ye 3 steps honge (abhi mat karna, sirf reference ke liye):
+
+# Package hatao:
+
+# cd Chat_Frontend
+# npm uninstall tailwindcss @tailwindcss/vite
+# vite.config.js se tailwindcss() plugin nikalna
+# index.css se @import "tailwindcss"; line hatana
+# Bas itna. Filhaal npm run dev chala ke dekho sab theek chal raha hai ya nahi — koi error aaye to bata dena, main yahin hoon. 🚀
