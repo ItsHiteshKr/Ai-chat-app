@@ -1,2 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
 .App {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background-image: url('./assets/backgroung_image.jpg');
+    background-size: cover;
+    background-position: center;
 }
