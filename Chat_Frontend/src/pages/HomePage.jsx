@@ -55,16 +55,16 @@ function HomePage() {
           </Tabs.List>
 
           <Tabs.Content value="login">
-            <Text textAlign="center" fontSize="lg" mt={4}>
+            <Text textAlign="center" fontSize="lg">
               Welcome back! Please login to your account.
             </Text>
             <Login />
           </Tabs.Content>
 
           <Tabs.Content value="SignUp">
-            {/* <Text textAlign="center" fontSize="lg" mt={4}>
+            <Text textAlign="center" fontSize="lg" >
               New here? Please sign up to create an account.
-            </Text> */}
+            </Text>
             <SignUp />
           </Tabs.Content>
 
