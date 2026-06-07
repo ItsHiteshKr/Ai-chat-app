@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
-import { Box, Button } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { ColorModeButton } from './components/ui/color-mode';
+import { Toaster } from './components/ui/toaster';
 import './App.css'
 import HomePage from './pages/HomePage';
 import Login from './components/authentication/Login';
@@ -12,6 +13,7 @@ function App() {
 
   return (
     <div className="App">
+      <Toaster />
       <Box position="absolute" top="4" right="4" rounded="full" >
         <ColorModeButton />
       </Box>
