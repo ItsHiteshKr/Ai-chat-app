@@ -3,8 +3,8 @@ import { Box, Button } from '@chakra-ui/react';
 import { ColorModeButton } from './components/ui/color-mode';
 import './App.css'
 import HomePage from './pages/HomePage';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
+import Login from './components/authentication/Login';
+import SignUp from './components/authentication/SignUp';
 import ChatPage from './pages/ChatPage';
 
 
