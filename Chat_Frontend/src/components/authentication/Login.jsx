@@ -3,23 +3,70 @@ import {
     Container, Box, Field,
     Input, Button, InputGroup
 } from "@chakra-ui/react"
+import { toaster } from "@/components/ui/toaster"
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Login() {
 
     const [show, setShow] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
 
     function clickhandle() {
         setShow(!show);
     }
 
-    const submitHandler = () => {
+    const submitHandler = async () => {
+        setLoading(true);
 
+        if (!email || !password) {
+            toaster.create({
+                title: "Please fill all the fields",
+                type: "warning",
+                duration: 3000,
+                position: "top",
+                closable: true,
+            });
+            setLoading(false);
+            return;
+        }
 
-        // Handle form submission logic here
-        console.log("Email:", email);
-        console.log("Password:", password);
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            };
+            const { data } = await axios.post("/api/user/login", { email, password }, config);
+
+            toaster.create({
+                title: "Login successful",
+                type: "success",
+                duration: 3000,
+                position: "top",
+                closable: true,
+            });
+
+            localStorage.setItem("token", data.token);
+            navigate("/chats");
+
+        } catch (error) {
+            toaster.create({
+                title: "Error occurred during login",
+                description: error.message,
+                type: "error",
+                duration: 5000,
+                position: "top",
+                closable: true,
+            });
+            setLoading(false);
+        }
+
     };
 
     return (
@@ -72,7 +119,9 @@ export default function Login() {
                     </InputGroup>
                 </Field.Root>
 
-                <Button colorScheme={"blue"} background={"blue"} mt={4} w="100%" display="block" mx="auto" px={4} rounded="full" onClick={submitHandler}>
+                <Button colorScheme={"blue"} background={"blue"} mt={4} w="100%" display="block" mx="auto" px={4} rounded="full"
+                    isLoading={loading}
+                    onClick={submitHandler}>
                     Login
                 </Button>
 
