@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="App">
       <Toaster />
-      <Box position="absolute" top="4" right="4" rounded="full" >
+      <Box position="absolute" top="4" right="4" rounded="full" p={3} zIndex={1}>
         <ColorModeButton />
       </Box>
       <Routes>

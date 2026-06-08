@@ -5,6 +5,8 @@ import {
     HStack, Text
 } from "@chakra-ui/react"
 import { toaster } from "@/components/ui/toaster"
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
 
@@ -13,24 +15,75 @@ export default function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [profilePicture, setProfilePicture] = useState(null);
+    const [pic, setpic] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
 
     function handleClick() {
         setShow(!show);
     }
 
+    const postDetails = (pics) => {
+        setLoading(true);
+        if (pics === undefined) {
+            toaster.create({
+                title: "Please select an image",
+                type: "warning",
+                duration: 5000,
+                position: "top",
+                closable: true,
+            });
+            return;
+        }
+        if (pics.type === "image/jpeg" || pics.type === "image/png") {
+            const data = new FormData();
+            data.append("file", pics);
+            data.append("upload_preset", "chat-App");
+            data.append("cloud_name", "diliqaxtu");
+            fetch("https://api.cloudinary.com/v1_1/diliqaxtu/image/upload", {
+                method: "post",
+                body: data,
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    setpic(data.url.toString());
+                    console.log(data.url.toString());
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setLoading(false);
+                });
+        } else {
+            toaster.create({
+                title: "Please select an image in jpeg or png format",
+                type: "warning",
+                duration: 5000,
+                position: "top",
+                closable: true,
+            });
+            setLoading(false);
+            return;
+        }
+    };
+
     // confirmPassword bhara hua ho aur password se match na kare to true
     const passwordMismatch =
         confirmPassword !== "" && password !== confirmPassword;
 
-    const submitHandler = () => {
+    const submitHandler = async () => {
+        setLoading(true);
         // 1. Saare required fields bhare hain?
         if (!name || !email || !password || !confirmPassword) {
             toaster.create({
                 title: "Please fill all the fields",
                 type: "warning",
+                duration: 5000,
+                position: "top",
                 closable: true,
             });
+            setLoading(false);
             return;
         }
 
@@ -39,22 +92,45 @@ export default function SignUp() {
             toaster.create({
                 title: "Passwords do not match",
                 type: "error",
+                duration: 5000,
+                position: "top",
                 closable: true,
             });
             return;
         }
 
-        // 3. Sab sahi -> aage ka logic (backend call yahan aayega)
-        console.log("Name:", name);
-        console.log("Email:", email);
-        console.log("Password:", password);
-        console.log("Profile Picture:", profilePicture);
-
-        toaster.create({
-            title: "Form submitted successfully",
-            type: "success",
-            closable: true,
-        });
+        try {
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                },
+            };
+            const { data } = await axios.post(
+                "/api/user",
+                { name, email, password, pic },
+                config
+            );
+            toaster.create({
+                title: "Form submitted successfully",
+                type: "success",
+                duration: 5000,
+                position: "top",
+                closable: true,
+            });
+            console.log(data);
+            localStorage.setItem("userInfo", JSON.stringify(data));
+            setLoading(false);
+            navigate("/chats");
+        } catch (error) {
+            toaster.create({
+                title: "Error submitting form",
+                description: error.response.data.message,
+                type: "error",
+                duration: 5000,
+                position: "top",
+                closable: true,
+            });
+        }
     };
 
 
@@ -148,10 +224,10 @@ export default function SignUp() {
                 <Field.Root optional>
                     <Field.Label>Upload Your Profile Picture</Field.Label>
                     <FileUpload.Root
-                        accept={["image/png"]}
+                        accept={["image/png", "image/jpeg"]}
                         maxFiles={1}
                         onFileChange={(details) =>
-                            setProfilePicture(details.acceptedFiles[0])
+                            postDetails(details.acceptedFiles[0])
                         }
                     >
                         <FileUpload.HiddenInput />
@@ -161,16 +237,22 @@ export default function SignUp() {
                                     Upload file
                                 </Button>
                             </FileUpload.Trigger>
-                            {profilePicture && (
-                                <Text fontSize="sm" color="gray.600" truncate>
-                                    {profilePicture.name}
+                            {loading && (
+                                <Text fontSize="sm" color="gray.600">
+                                    Uploading...
+                                </Text>
+                            )}
+                            {pic && !loading && (
+                                <Text fontSize="sm" color="green.600">
+                                    Image uploaded ✓
                                 </Text>
                             )}
                         </HStack>
                     </FileUpload.Root>
                 </Field.Root>
 
-                <Button colorScheme="blue" background={"blue"} mt={4} w="100%" display="block" mx="auto" px={4} rounded="full" onClick={submitHandler}>
+                <Button colorScheme="blue" background={"blue"} mt={4} w="100%" display="block" mx="auto" px={4} rounded="full" onClick={submitHandler}
+                    isLoading={loading}>
                     Sign Up
                 </Button>
             </Box>

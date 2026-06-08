@@ -1,18 +1,38 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcryptjs');
 
-const userModel = mongoose.Schema(
+
+const userSchema = mongoose.Schema(
     {
-        name: { type: string, required: true },
-        phone_number: { type: string, required: true },
-        email: { type: string, required: true, unique: true },
-        password: { type: string, required: true },
-        pic: { type: string, required: true, default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" },
+        name: { type: String, required: true },
+        email: { type: String, required: true, unique: true },
+        password: { type: String, required: true },
+
+        pic: {
+            type: String,
+            default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+        },
     },
     {
         timestamps: true,
     }
 );
 
-const User = mongoose.model("User", userModel);
+// Login ke time password compare karne ke liye
+userSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// Save se pehle password hash karo (sirf jab password change ho)
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) {
+        return;
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+});
+
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;
