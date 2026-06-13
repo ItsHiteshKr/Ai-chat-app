@@ -14,6 +14,7 @@ import ChatLoading from './ChatLoading';
 import UserListItem from '../UserAvatar/UserListItem';
 
 const url = import.meta.env.VITE_API_URL;
+const version = import.meta.env.VITE_VERSION;
 
 function SideDrawer() {
 
@@ -113,6 +114,7 @@ function SideDrawer() {
 
       <Text fontSize="4xl" fontFamily="Work sans">
         Talk-A-tive
+        <span style={{ color: "blue", fontSize: "small" }}>{version}</span>
       </Text>
 
       <Box gap={2} display="flex" alignItems="center">
