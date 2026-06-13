@@ -7,7 +7,7 @@ import {
   Box, Tabs, Link,
   Text
 } from "@chakra-ui/react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   const navigate = useNavigate();
