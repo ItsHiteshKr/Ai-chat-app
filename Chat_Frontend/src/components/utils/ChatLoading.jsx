@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    HStack, Stack,
+    Stack,
     SkeletonText
 } from '@chakra-ui/react'
 function ChatLoading() {
