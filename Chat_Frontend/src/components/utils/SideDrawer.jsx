@@ -13,7 +13,7 @@ import axios from "axios";
 import ChatLoading from './ChatLoading';
 import UserListItem from '../UserAvatar/UserListItem';
 
-const url = process.env.BACKEND_URL;
+const url = import.meta.env.VITE_API_URL;
 
 function SideDrawer() {
 
