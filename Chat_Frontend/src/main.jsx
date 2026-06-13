@@ -5,12 +5,14 @@ import { BrowserRouter } from "react-router-dom"
 import './index.css'
 import App from './App.jsx'
 
+import ChatProvider from './context/ChatProvider'
+
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <Provider>
-      <BrowserRouter>
+  <BrowserRouter>
+    <ChatProvider>
+      <Provider>
         <App />
-      </BrowserRouter>
-    </Provider>
-  </StrictMode>,
+      </Provider>
+    </ChatProvider>
+  </BrowserRouter>
 )

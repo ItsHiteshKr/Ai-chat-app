@@ -1,23 +1,30 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors'); // install karna hai isko 
 const connectDB = require('./config/db');
-const userRoutes = require('./routes/userRoutes');
+
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
-
-
-
+const userRoutes = require('./routes/userRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 
 dotenv.config();
 
 connectDB();
 const app = express();
-app.use(express.json()); // to accept JSON data from the frontend
+app.use(express.json());
+
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+}));
 
 app.get('/', (req, res) => {
     res.send('Get route is Running Successfully');
 });
 
 app.use('/api/user', userRoutes);
+app.use('/api/chat', chatRoutes);
+
 
 app.use(notFound);
 app.use(errorHandler);

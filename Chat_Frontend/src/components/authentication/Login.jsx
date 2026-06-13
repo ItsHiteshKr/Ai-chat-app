@@ -52,7 +52,7 @@ export default function Login() {
                 closable: true,
             });
 
-            localStorage.setItem("token", data.token);
+            localStorage.setItem("userInfo", JSON.stringify(data));
             navigate("/chats");
 
         } catch (error) {
