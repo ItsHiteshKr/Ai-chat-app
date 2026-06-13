@@ -7,6 +7,7 @@ import { toaster } from "@/components/ui/toaster"
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const url = process.env.BACKEND_URL;
 
 export default function Login() {
 
@@ -42,7 +43,7 @@ export default function Login() {
                     "Content-Type": "application/json"
                 }
             };
-            const { data } = await axios.post("/api/user/login", { email, password }, config);
+            const { data } = await axios.post(`${url}/api/user/login`, { email, password }, config);
 
             toaster.create({
                 title: "Login successful",

@@ -11,7 +11,7 @@ import { getSender } from '@/config/ChatLogic';
 import ChatLoading from './utils/ChatLoading';
 import { Stack } from '@chakra-ui/react';
 
-
+const url = process.env.BACKEND_URL;
 
 
 function MyChats() {
@@ -29,7 +29,7 @@ function MyChats() {
         },
       };
 
-      const { data } = await axios.get("/api/chat", config);
+      const { data } = await axios.get(`${url}/api/chat`, config);
 
       setChats(data);
 

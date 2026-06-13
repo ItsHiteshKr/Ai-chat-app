@@ -8,6 +8,8 @@ import { toaster } from "@/components/ui/toaster"
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const url = process.env.BACKEND_URL;
+
 export default function SignUp() {
 
     const [show, setShow] = useState(false);
@@ -106,7 +108,7 @@ export default function SignUp() {
                 },
             };
             const { data } = await axios.post(
-                "/api/user",
+                `${url}/api/user`,
                 { name, email, password, pic },
                 config
             );
