@@ -12,7 +12,7 @@ import UserBadgeItem from './UserBadgeItem';
 import { IoEyeOutline } from "react-icons/io5";
 import { ChatState } from '../../context/ChatProvider';
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_BACKEND_URL;
 
 
 const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {

@@ -7,7 +7,7 @@ import { toaster } from "@/components/ui/toaster"
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_BACKEND_URL;
 
 export default function Login() {
 

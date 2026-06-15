@@ -9,7 +9,7 @@ import axios from "axios";
 import UserListItem from "../UserAvatar/UserListItem"
 import UserBadgeItem from './UserBadgeItem';
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_BACKEND_URL;
 
 const GroupChatModal = ({ children }) => {
 
