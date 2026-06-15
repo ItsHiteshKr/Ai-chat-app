@@ -3,17 +3,19 @@ import {
   Box, Avatar, Button,
   Text, Menu, Portal, Drawer, CloseButton,
   Input, Spinner
-} from '@chakra-ui/react'
-import { Tooltip } from "@/components/ui/tooltip"
-import { FaBell } from 'react-icons/fa'
-import { ChatState } from '../../context/ChatProvider'
-import ProfileModal from './ProfileModal'
-import { toaster } from "@/components/ui/toaster"
+} from '@chakra-ui/react';
+import { Tooltip } from "@/components/ui/tooltip";
+import { FaBell } from 'react-icons/fa';
+import { ChatState } from '../../context/ChatProvider';
+import ProfileModal from './ProfileModal';
+import { toaster } from "@/components/ui/toaster";
 import axios from "axios";
 import ChatLoading from './ChatLoading';
 import UserListItem from '../UserAvatar/UserListItem';
 
+
 const url = import.meta.env.VITE_API_URL;
+const version = import.meta.env.VITE_VERSION;
 
 function SideDrawer() {
 
@@ -35,7 +37,13 @@ function SideDrawer() {
   const handleSearch = async () => {
 
     if (!search) {
-      toaster.error("Please enter something in search");
+      toaster.create({
+        title: "Please enter something in search",
+        type: "warning",
+        duration: 3000,
+        position: "top",
+        closable: true,
+      });
       return;
     }
 
@@ -52,7 +60,13 @@ function SideDrawer() {
       setSearchresult(data);
 
     } catch (error) {
-      toaster.error("Failed to load the search results");
+      toaster.create({
+        title: "Failed to load the search results",
+        type: "warning",
+        duration: 3000,
+        position: "top",
+        closable: true,
+      });
       setLoading(false);
     }
   };
@@ -81,7 +95,13 @@ function SideDrawer() {
       setIsOpen(false); // Close the drawer after accessing the chat
 
     } catch (error) {
-      toaster.error("Error fetching the chat");
+      toaster.create({
+        title: "Error fetching the chat",
+        type: "warning",
+        duration: 3000,
+        position: "top",
+        closable: true,
+      });
       setLoadingChat(false);
     }
   };
@@ -113,6 +133,7 @@ function SideDrawer() {
 
       <Text fontSize="4xl" fontFamily="Work sans">
         Talk-A-tive
+        <span style={{ color: "blue", fontSize: "small" }}>{version}</span>
       </Text>
 
       <Box gap={2} display="flex" alignItems="center">
@@ -175,6 +196,10 @@ function SideDrawer() {
                           borderWidth="2px"
                           borderColor="blue.300"
                           _hover={{ borderColor: "blue.400" }}
+                          _focus={{
+                            borderColor: "blue.500",
+                            outline: "none",
+                          }}
                         />
 
                         <Button onClick={handleSearch}

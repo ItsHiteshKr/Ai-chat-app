@@ -9,6 +9,8 @@ import {
 } from "@chakra-ui/react"
 import { useNavigate } from "react-router-dom";
 
+const version = import.meta.env.VITE_VERSION;
+
 function HomePage() {
   const navigate = useNavigate();
 
@@ -86,6 +88,11 @@ function HomePage() {
 
         </Tabs.Root>
       </Box>
+
+      <h3 textAlign="center" fontSize="sm" mt={4} color="gray.500">
+        Version: {version}
+      </h3>
+
     </Container>
   )
 }

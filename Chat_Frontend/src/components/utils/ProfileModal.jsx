@@ -25,7 +25,7 @@ const ProfileModal = ({ user, children, open, setOpen }) => {
             {!isControlled && (
                 <Dialog.Trigger asChild>
                     {children ? children : (
-                        <IconButton aria-label="View profile" variant="ghost">
+                        <IconButton aria-label="View profile" variant="ghost" color="blue" ml="auto">
                             <FiEye />
                         </IconButton>
                     )}
@@ -33,10 +33,10 @@ const ProfileModal = ({ user, children, open, setOpen }) => {
             )}
             <Portal>
                 <Dialog.Backdrop />
-                <Dialog.Positioner>
+                <Dialog.Positioner display="flex" alignItems="center" justifyContent="center">
                     <Dialog.Content>
-                        <Dialog.Header justifyContent="center">
-                            <Dialog.Title fontSize="3xl" fontFamily="Work sans" m={2}>
+                        <Dialog.Header alignItems="center" flexDirection="column" p={4}>
+                            <Dialog.Title fontSize="3xl" fontFamily="Work sans" mt={2}>
                                 {user?.name}
                             </Dialog.Title>
                         </Dialog.Header>
@@ -44,12 +44,12 @@ const ProfileModal = ({ user, children, open, setOpen }) => {
                             display="flex"
                             flexDirection="column"
                             alignItems="center"
-                            gap={4}
+                            gap={8}
                         >
                             <Image
                                 borderRadius="full"
                                 boxSize="150px"
-                                src={user?.pic || "https://as1.ftcdn.net/v2/jpg/03/46/83/96/1000_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"}
+                                src={user?.pic}
                                 alt={user?.name}
                             />
                             <Text fontSize="lg">
