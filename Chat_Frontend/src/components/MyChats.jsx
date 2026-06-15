@@ -13,7 +13,7 @@ import { Stack } from '@chakra-ui/react';
 
 import GroupChatModal from './utils/GroupChatModal';
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_BACKEND_URL;
 
 
 const MyChats = ({ fetchAgain }) => {

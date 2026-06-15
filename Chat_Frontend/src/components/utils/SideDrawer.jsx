@@ -14,7 +14,7 @@ import ChatLoading from './ChatLoading';
 import UserListItem from '../UserAvatar/UserListItem';
 
 
-const url = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_API_BACKEND_URL;
 const version = import.meta.env.VITE_VERSION;
 
 function SideDrawer() {
