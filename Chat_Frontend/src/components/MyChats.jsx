@@ -11,10 +11,12 @@ import { getSender } from '@/config/ChatLogic';
 import ChatLoading from './utils/ChatLoading';
 import { Stack } from '@chakra-ui/react';
 
+import GroupChatModal from './utils/GroupChatModal';
+
 const url = import.meta.env.VITE_API_URL;
 
 
-function MyChats() {
+const MyChats = ({ fetchAgain }) => {
 
   const [loggedUser, setLoggedUser] = useState();
 
@@ -34,14 +36,20 @@ function MyChats() {
       setChats(data);
 
     } catch (error) {
-      toaster.error("Failed to load the chats");
+      toaster.create({
+        title: "failed to load the chats",
+        type: "warning",
+        duration: 3000,
+        position: "top",
+        closable: true,
+      });
     }
   }
 
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
-  }, [])
+  }, [fetchAgain]);
 
   return (
     <Box
@@ -50,7 +58,7 @@ function MyChats() {
       alignItems="center"
       p={3}
       bg="white"
-      w={{ base: "100%", md: "31%" }}
+      w={{ base: "100%", md: "34%" }}
       borderRadius="lg"
       borderWidth="1px"
     >
@@ -67,21 +75,21 @@ function MyChats() {
         overflowY="hidden"
         borderBottomWidth="1px"
       >
-        My Chats
-        <Button
-          display="flex"
-          color="black"
-          p={{ base: "0px 5px", md: "0px 10px" }}
-          bg="gray.200"
-          fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-          rightIcon={<MdAdd />}
-          onClick={() => {
-            // Handle the click event for creating a new group chat
-            console.log("Create New Group Chat clicked");
-          }}
-        >
-          New Group Chat <MdAdd />
-        </Button>
+        <Text>My Chats
+        </Text>
+
+        <GroupChatModal>
+          <Button
+            display="flex"
+            color="black"
+            p={{ base: "0px 5px", md: "0px 10px" }}
+            bg="gray.200"
+            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+            rightIcon={<MdAdd />}
+          >
+            New Group Chat <MdAdd />
+          </Button>
+        </GroupChatModal>
       </Box>
 
       <Box

@@ -13,7 +13,7 @@ function ChatPage() {
 
   const { user } = ChatState();
 
-  // const [chats, setChats] = useState([]);
+  const [fetchAgain, setFetchAgain] = useState([]);
 
   return (
     <div style={{ width: "100%", maxWidth: "100%" }}>
@@ -22,12 +22,12 @@ function ChatPage() {
         display="flex"
         justifyContent="space-between"
         w="100%"
-        h="91.5vh"
+        h="92.5vh"
         p="10px"
 
       >
-        {user && <MyChats />}
-        {user && <ChatBox />}
+        {user && <MyChats fetchAgain={fetchAgain} />}
+        {user && <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
       </Box>
     </div>
   )
