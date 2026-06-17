@@ -254,7 +254,7 @@ export default function SignUp() {
                 </Field.Root>
 
                 <Button colorScheme="blue" background={"blue"} mt={4} w="100%" display="block" mx="auto" px={4} rounded="full" onClick={submitHandler}
-                    isLoading={loading}>
+                    loading={loading}>
                     Sign Up
                 </Button>
             </Box>

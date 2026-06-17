@@ -121,7 +121,7 @@ export default function Login() {
                 </Field.Root>
 
                 <Button colorScheme={"blue"} background={"blue"} mt={4} w="100%" display="block" mx="auto" px={4} rounded="full"
-                    isLoading={loading}
+                    loading={loading}
                     onClick={submitHandler}>
                     Login
                 </Button>
