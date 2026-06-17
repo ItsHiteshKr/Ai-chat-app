@@ -19,12 +19,15 @@ const url = import.meta.env.VITE_API_BACKEND_URL;
 const MyChats = ({ fetchAgain }) => {
 
   const [loggedUser, setLoggedUser] = useState();
+  const [loading, setLoading] = useState(false);
 
 
   const { selectedChat, setSelectedChat, chats, setChats, user } = ChatState();
 
   const fetchChats = async () => {
+
     try {
+      setLoading(true);
       const config = {
         headers: {
           authorization: `Bearer ${user.token}`,
@@ -43,6 +46,8 @@ const MyChats = ({ fetchAgain }) => {
         position: "top",
         closable: true,
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -103,7 +108,9 @@ const MyChats = ({ fetchAgain }) => {
         overflowY="hidden"
         borderWidth="1px"
       >
-        {chats ? (
+        {loading ? (
+          <ChatLoading />
+        ) : (chats && chats.length > 0 ? (
           <Stack
             overflowY="scroll"
           >
@@ -127,7 +134,34 @@ const MyChats = ({ fetchAgain }) => {
             }
           </Stack>
         ) : (
-          <ChatLoading />
+          <Box>
+            <Text fontSize="xl" fontFamily="Work sans" textAlign="center">
+              No chats available. Create a new chat to get started!
+            </Text>
+            <Box mt={4} p={3} bg="#F0F0F0" borderRadius="md" textAlign="start">
+              <Text color="blue.400" fontSize="2xl" mb={2}>
+                Steps to create a new chat:
+              </Text>
+              <Text>
+
+                1. Click on the "Search " button.
+
+              </Text>
+              <Text>
+                2. Search for users by their name or email.
+              </Text>
+              <Text>
+                3. Select the users you want to chat with.
+              </Text>
+              <Text>
+                4. Click on the "Create Chat" button to start chatting!
+              </Text>
+
+            </Box>
+
+
+          </Box>
+        )
         )}
       </Box>
     </Box>
