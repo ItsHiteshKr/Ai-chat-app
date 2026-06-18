@@ -15,7 +15,7 @@ import { ChatState } from '../../context/ChatProvider';
 const url = import.meta.env.VITE_API_BACKEND_URL;
 
 
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
+const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
     const { user, selectedChat, setSelectedChat } = ChatState();
 
@@ -114,8 +114,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
             userToRemove._id === user._id ? setSelectedChat() : setSelectedChat(data);
 
             setFetchAgain(!fetchAgain);
-            setLoading(false);
 
+            fetchMessages();
 
         } catch (error) {
             toaster.create({
@@ -125,6 +125,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
                 position: "top",
                 closable: true,
             })
+
+        } finally {
             setLoading(false);
         }
 

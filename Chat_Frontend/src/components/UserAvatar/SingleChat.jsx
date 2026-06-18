@@ -11,6 +11,9 @@ import ProfileModal from '../utils/ProfileModal';
 import UpdateGroupChatModal from '../utils/UpdateGroupChatModal';
 import axios from "axios";
 import { toaster } from "@/components/ui/toaster";
+import "../../components/style.css";
+import ScrollableChat from '../utils/ScrollableChat';
+
 
 const url = import.meta.env.VITE_API_BACKEND_URL;
 
@@ -22,11 +25,43 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const [loading, setLoading] = useState(false);
     const [newMessage, setNewMessage] = useState("");
 
+    const fetchMessages = async () => {
+        if (!selectedChat) return;
+
+        try {
+            setLoading(true);
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            const { data } = await axios.get(`${url}/api/message/${selectedChat._id}`, config);
+
+            setMessage(data);
+            // console.log(data);
+
+        } catch (error) {
+            toaster.create({
+                title: "Failed to fetch messages",
+                type: "error",
+                duration: 3000,
+                position: "top",
+                closable: true,
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchMessages();
+    }, [selectedChat]);
+
+
     const sendMessage = async (event) => {
         if (event.key === "Enter" && newMessage) {
 
             try {
-                setLoading(true);
 
                 const config = {
                     headers: {
@@ -42,7 +77,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     content: newMessage,
                     chatId: selectedChat._id,
                 }, config);
-                console.log(data);
+                // console.log(data);
 
 
                 setMessage([...message, data]);
@@ -55,8 +90,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     position: "top",
                     closable: true,
                 });
-            } finally {
-                setLoading(false);
             }
         }
     }
@@ -101,6 +134,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                     <UpdateGroupChatModal
                                         fetchAgain={fetchAgain}
                                         setFetchAgain={setFetchAgain}
+                                        fetchmessages={fetchMessages}
                                     />
                                 </>
 
@@ -130,8 +164,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                     color="teal.500"
                                 />
                             ) : (
-                                <div>
-                                    {/* Messages will be displayed here */}
+                                <div className="messages">
+
+                                    <ScrollableChat messages={message} />
                                 </div>
                             )}
 
