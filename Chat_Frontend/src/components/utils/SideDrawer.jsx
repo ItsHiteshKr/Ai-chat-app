@@ -5,7 +5,7 @@ import {
   Input, Spinner
 } from '@chakra-ui/react';
 import { Tooltip } from "@/components/ui/tooltip";
-import { FaBell } from 'react-icons/fa';
+import { FaBell, FaSearch } from 'react-icons/fa';
 import { ChatState } from '../../context/ChatProvider';
 import ProfileModal from './ProfileModal';
 import { toaster } from "@/components/ui/toaster";
@@ -118,11 +118,15 @@ function SideDrawer() {
       borderWidth="2px"
     >
       <Box>
-        <Tooltip content="Search users to chat" position="bottom" mr={2}>
+        <Tooltip content="Search users to chat"
+          contentProps={{ px: 1, py: 1 }}
+          positioning={{ placement: "bottom" }}
+        >
           <Button variant="ghost" bg="gray.100" rounded="full" _hover={{ bg: "gray.200" }}
-            onClick={() => setIsOpen(true)}>
-            <i className="fas fa-search"></i>
-            <Text display={{ base: "none", md: "flex" }} px="2">
+            onClick={() => setIsOpen(true)} px={2} py={1} display="flex" alignItems="center">
+            {/* <i className="fas fa-search"></i> */}
+            <FaSearch size={15} />
+            <Text display={{ base: "none", md: "flex" }} px="0.5" fontSize="md">
               Search User
             </Text>
           </Button>
@@ -137,7 +141,10 @@ function SideDrawer() {
       </Text>
 
       <Box gap={2} display="flex" alignItems="center">
-        <Tooltip content="Notifications" position="bottom" mr={2}>
+        <Tooltip content="Notifications"
+          contentProps={{ px: 3, py: 1 }}
+          positioning={{ placement: "bottom" }}
+        >
           <Button variant="ghost" bg="gray.100" rounded="full" _hover={{ bg: "gray.200" }}>
             <FaBell size={18} />
           </Button>
