@@ -21,13 +21,12 @@ import { io } from "socket.io-client";
 
 const url = import.meta.env.VITE_API_BACKEND_URL;
 var socket, selectedChatCompare;
-// const Lottie = LottieImport?.default || LottieImport;
 
 
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
-    const { user, selectedChat, setSelectedChat } = ChatState();
+    const { user, selectedChat, setSelectedChat, notification, setNotification } = ChatState();
 
     const [message, setMessage] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -37,15 +36,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     // for typing indicator
     const [typing, setTyping] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
-
-    // const defaultOptions = {
-    //     loop: true,
-    //     autoplay: true,
-    //     animationData: typingAnimation,
-    //     rendererSettings: {
-    //         preserveAspectRatio: "xMidYMid meet"
-    //     },
-    // }
 
 
     const fetchMessages = async () => {
@@ -101,15 +91,21 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         selectedChatCompare = selectedChat;
     }, [selectedChat]);
 
+    console.log("notification", notification);
+
     useEffect(() => {
-        socket.on("message recieved",
-            (newMessageRecieved) => {
-                if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
-                    // Optionally, you can show a toast notification for new messages in other chats
-                } else {
-                    setMessage((prevMessages) => [...prevMessages, newMessageRecieved]);
+        socket.on("message recieved", (newMessageRecieved) => {
+            if (
+                !selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
+                if (!notification.includes(newMessageRecieved)) {
+                    setNotification([newMessageRecieved, ...notification]);
+                    setFetchAgain(!fetchAgain);
                 }
+
+            } else {
+                setMessage((prevMessages) => [...prevMessages, newMessageRecieved]);
             }
+        }
         );
         return () => {
             socket.off("message recieved");
@@ -263,12 +259,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                                 loop
                                                 style={{ width: '70px', height: '28px' }}
                                             />
-                                            {/* <Lottie
-                                                options={defaultOptions}
-                                                height={28}
-                                                width={70}
-                                                isClickToPauseDisabled
-                                            /> */}
                                         </Box>
                                     ) : null
                                 }

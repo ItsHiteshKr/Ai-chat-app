@@ -12,14 +12,15 @@ import { toaster } from "@/components/ui/toaster";
 import axios from "axios";
 import ChatLoading from './ChatLoading';
 import UserListItem from '../UserAvatar/UserListItem';
-
+import { getSender } from '../../config/ChatLogic'
 
 const url = import.meta.env.VITE_API_BACKEND_URL;
 const version = import.meta.env.VITE_VERSION;
 
 function SideDrawer() {
 
-  const { user, setSelectedChat, chats, setChats } = ChatState();
+  const { user, setSelectedChat, chats, setChats,
+    notification, setNotification } = ChatState();
 
   const [isOpen, setIsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -124,7 +125,7 @@ function SideDrawer() {
         >
           <Button variant="ghost" bg="gray.100" rounded="full" _hover={{ bg: "gray.200" }}
             onClick={() => setIsOpen(true)} px={2} py={1} display="flex" alignItems="center">
-            {/* <i className="fas fa-search"></i> */}
+
             <FaSearch size={15} />
             <Text display={{ base: "none", md: "flex" }} px="0.5" fontSize="md">
               Search User
@@ -141,21 +142,75 @@ function SideDrawer() {
       </Text>
 
       <Box gap={2} display="flex" alignItems="center">
-        <Tooltip content="Notifications"
-          contentProps={{ px: 3, py: 1 }}
-          positioning={{ placement: "bottom" }}
-        >
-          <Button variant="ghost" bg="gray.100" rounded="full" _hover={{ bg: "gray.200" }}>
-            <FaBell size={18} />
-          </Button>
-        </Tooltip>
+
+        <Menu.Root content="Notifications">
+          <Menu.Trigger asChild>
+            <Button variant="ghost" bg="gray.100" rounded="full" _hover={{ bg: "gray.200" }} position="relative">
+              <FaBell size={18} />
+              {notification.length > 0 && (
+                <Box
+                  as="span"
+                  position="absolute"
+                  top="0"
+                  right="0"
+                  transform="translate(35%, -35%)"
+                  minW="18px"
+                  h="18px"
+                  px="5px"
+                  bg="red.500"
+                  color="white"
+                  borderRadius="full"
+                  fontSize="10px"
+                  fontWeight="bold"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  {notification.length > 99 ? '99+' : notification.length}
+                </Box>
+              )}
+            </Button>
+          </Menu.Trigger>
+          <Portal>
+            <Menu.Positioner>
+              <Menu.Content>
+                <Menu.ItemGroup>
+                  <Menu.ItemGroupLabel p={2} w="full" color="red.600" >
+                    {
+                      !notification.length ? "No new messages" : `You have ${notification.length} new messages`
+                    }
+                  </Menu.ItemGroupLabel>
+                </Menu.ItemGroup>
+                <Menu.CheckboxItem value="new-txt-a" p={2} cursor="pointer" borderWidth={1} w="full" >
+                  {notification.map(notif => (
+                    <Menu.CheckboxItem
+                      key={notif._id}
+                      onClick={() => {
+                        setSelectedChat(notif.chat);
+                        setNotification(notification.filter(n => n !== notif));
+                      }}
+                      cursor="pointer" w="full"
+                    >
+                      {
+                        notif.chat.isgroupChat ? `New Message in ${notif.chat.ChatName}` : `New message from ${getSender(user, notif.chat.users)}`
+                      }
+                    </Menu.CheckboxItem >
+
+                  ))
+                  }
+                </Menu.CheckboxItem>
+              </Menu.Content>
+            </Menu.Positioner>
+          </Portal>
+        </Menu.Root>
+
 
         <Menu.Root positioning={{ placement: "bottom" }} >
           <Menu.Trigger rounded="full" focusRing="outside" cursor="pointer"
           >
             <Avatar.Root size="sm">
               <Avatar.Fallback name={user.name || "Unknown User"} />
-              <Avatar.Image src={user.pic || "https://as1.ftcdn.net/v2/jpg/03/46/83/96/1000_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"} />
+              <Avatar.Image src={user.pic} />
             </Avatar.Root>
           </Menu.Trigger>
           <Portal>
@@ -251,7 +306,7 @@ function SideDrawer() {
 
       </Box>
 
-    </Box>
+    </Box >
   )
 }
 export default SideDrawer;
