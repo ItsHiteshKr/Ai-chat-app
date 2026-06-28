@@ -13,17 +13,30 @@ import axios from "axios";
 import { toaster } from "@/components/ui/toaster";
 import "../../components/style.css";
 import ScrollableChat from '../utils/ScrollableChat';
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+// import LottieImport from "react-lottie";
+import typingAnimation from '../../animation/Typing Indicator.lottie';
 
+import { io } from "socket.io-client";
 
 const url = import.meta.env.VITE_API_BACKEND_URL;
+var socket, selectedChatCompare;
+
+
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
-    const { user, selectedChat, setSelectedChat } = ChatState();
+    const { user, selectedChat, setSelectedChat, notification, setNotification } = ChatState();
 
     const [message, setMessage] = useState([]);
     const [loading, setLoading] = useState(false);
     const [newMessage, setNewMessage] = useState("");
+    const [socketConnected, setSocketConnected] = useState(false);
+
+    // for typing indicator
+    const [typing, setTyping] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+
 
     const fetchMessages = async () => {
         if (!selectedChat) return;
@@ -40,6 +53,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             setMessage(data);
             // console.log(data);
 
+            socket.emit("join chat", selectedChat._id);
+
+
         } catch (error) {
             toaster.create({
                 title: "Failed to fetch messages",
@@ -54,8 +70,48 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     };
 
     useEffect(() => {
+        socket = io(url);
+        socket.emit("setup", user);
+        socket.on("connected", () => {
+            setSocketConnected(true);
+        });
+        socket.on("typing", () => setIsTyping(true));
+        socket.on("stop typing", () => setIsTyping(false));
+        return () => {
+            socket.disconnect();
+        }
+
+    }, [user]);
+
+
+
+    useEffect(() => {
         fetchMessages();
+
+        selectedChatCompare = selectedChat;
     }, [selectedChat]);
+
+    console.log("notification", notification);
+
+    useEffect(() => {
+        socket.on("message recieved", (newMessageRecieved) => {
+            if (
+                !selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
+                if (!notification.includes(newMessageRecieved)) {
+                    setNotification([newMessageRecieved, ...notification]);
+                    setFetchAgain(!fetchAgain);
+                }
+
+            } else {
+                setMessage((prevMessages) => [...prevMessages, newMessageRecieved]);
+            }
+        }
+        );
+        return () => {
+            socket.off("message recieved");
+        }
+    });
+
 
 
     const sendMessage = async (event) => {
@@ -79,7 +135,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 }, config);
                 // console.log(data);
 
-
+                socket.emit("new message", data);
                 setMessage([...message, data]);
 
             } catch (error) {
@@ -94,10 +150,32 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }
     }
 
+
     const typingHandler = (e) => {
         setNewMessage(e.target.value);
 
         // typing indicator logic can be implemented here
+        if (!socketConnected) return;
+
+        if (!typing) {
+            setTyping(true);
+            socket.emit("typing", selectedChat._id);
+        }
+
+        let lastTypingTime = new Date().getTime();
+        var timerLength = 3000;
+
+        setTimeout(() => {
+            var timeNow = new Date().getTime();
+            var timeDiff = timeNow - lastTypingTime;
+
+            if (timeDiff >= timerLength && typing) {
+                socket.emit("stop typing", selectedChat._id);
+                setTyping(false);
+            }
+
+
+        }, timerLength);
     }
 
 
@@ -172,6 +250,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 
                             <Field.Root mt={3} required onKeyDown={sendMessage}>
+                                {
+                                    isTyping ? (
+                                        <Box w="70px" h="28px" mb={1} overflow="hidden" display="flex" alignItems="center">
+                                            <DotLottieReact
+                                                src={typingAnimation}
+                                                autoplay
+                                                loop
+                                                style={{ width: '70px', height: '28px' }}
+                                            />
+                                        </Box>
+                                    ) : null
+                                }
                                 <Input
                                     variant="filled"
                                     bg="#E0E0E0"
